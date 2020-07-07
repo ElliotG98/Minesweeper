@@ -5,8 +5,6 @@ import platform
 import random
 from datetime import datetime
 
-SIZE_X = 10
-SIZE_Y = 10
 
 STATE_DEFAULT = 0
 STATE_CLICKED = 1
@@ -32,6 +30,8 @@ class Minesweeper:
         self.tk = tk
         self.frame = Frame(self.tk)
         self.frame.pack()
+        self.SIZE_X = 10
+        self.SIZE_Y = 10
 
         # INIT assets
         self.assets = {
@@ -52,10 +52,10 @@ class Minesweeper:
             "mines": Label(self.frame, text="Mines: 0"),
             "flags": Label(self.frame, text="Flags: 0")
         }
-        self.labels["time"].grid(row=0, column=0, columnspan=int(SIZE_Y/2))  # TOP LEFT
-        self.labels["difficulty"].grid(row=0, column=int(SIZE_Y/2-1), columnspan=int(SIZE_Y/2))  # TOP RIGHT
-        self.labels["mines"].grid(row=SIZE_X+1, column=0, columnspan=int(SIZE_Y/2))  # BOTTOM LEFT
-        self.labels["flags"].grid(row=SIZE_X+1, column=int(SIZE_Y/2-1), columnspan=int(SIZE_Y/2))  # BOTTOM RIGHT
+        self.labels["time"].grid(row=0, column=0, columnspan=int(self.SIZE_Y/2))  # TOP LEFT
+        self.labels["difficulty"].grid(row=0, column=int(self.SIZE_Y/2-1), columnspan=int(self.SIZE_Y/2))  # TOP RIGHT
+        self.labels["mines"].grid(row=self.SIZE_X+1, column=0, columnspan=int(self.SIZE_Y/2))  # BOTTOM LEFT
+        self.labels["flags"].grid(row=self.SIZE_X+1, column=int(self.SIZE_Y/2-1), columnspan=int(self.SIZE_Y/2))  # BOTTOM RIGHT
 
         # CREATE FLAG AND CLICKED TILE VARIABLES
         self.flag_count = 0
@@ -71,19 +71,21 @@ class Minesweeper:
         self.update_timer()  # INIT TIMER
 
     # SET DIFFICULTY OPTIONS
-    @staticmethod
-    def difficulty_options(value):
+    def difficulty_options(self, value):
         if value is DIFFICULTY[0]:
-            pass
+            self.SIZE_X = 10
+            self.SIZE_Y = 10
         elif value is DIFFICULTY[1]:
-            pass
+            self.SIZE_X = 20
+            self.SIZE_Y = 20
         else:
-            pass
+            self.SIZE_X = 40
+            self.SIZE_Y = 40
 
     def setup(self):
         # CREATE BUTTONS
-        for i in range(0, SIZE_X):
-            for j in range(0, SIZE_Y):
+        for i in range(0, self.SIZE_X):
+            for j in range(0, self.SIZE_Y):
                 # RESET X ON NEW Y ROW
                 if j == 0:
                     self.tiles[i] = {}
@@ -117,8 +119,8 @@ class Minesweeper:
 
                 self.tiles[i][j] = tile
 
-        for i in range(0, SIZE_X):
-            for j in range(0, SIZE_Y):
+        for i in range(0, self.SIZE_X):
+            for j in range(0, self.SIZE_Y):
                 mine_count = 0
                 for n in self.get_neighbours(i, j):
                     mine_count += 1 if n["is_mine"] else 0
@@ -166,7 +168,7 @@ class Minesweeper:
         if tile["state"] is not STATE_CLICKED:
             tile["state"] = STATE_CLICKED
             self.clicked_count += 1
-        if self.clicked_count == (SIZE_X * SIZE_Y) - self.mines:
+        if self.clicked_count == (self.SIZE_X * self.SIZE_Y) - self.mines:
             self.game_over(True)
 
     def on_right_click(self, tile):
@@ -238,8 +240,8 @@ class Minesweeper:
         self.clicked_count += 1
 
     def game_over(self, won):
-        for x in range(SIZE_X):
-            for y in range(SIZE_Y):
+        for x in range(self.SIZE_X):
+            for y in range(self.SIZE_Y):
                 if self.tiles[x][y]["is_mine"] is False and self.tiles[x][y]["state"] is STATE_FLAGGED:
                     self.tiles[x][y]["button"].config(image=self.assets["wrong"])
                 if self.tiles[x][y]["is_mine"] is True and self.tiles[x][y]["state"] is not STATE_FLAGGED:
