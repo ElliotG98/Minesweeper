@@ -82,6 +82,8 @@ class Minesweeper:
             self.SIZE_X = 40
             self.SIZE_Y = 40
 
+        self.restart()
+
     def setup(self):
         # CREATE BUTTONS
         for i in range(0, self.SIZE_X):
